@@ -1,0 +1,3 @@
+Кількість ватт
+yes,no,TOV Roga ta koputa,20,15,1800,Globe,E40
+no,yes,TOV Roga ta Oleni,40,30,3600,Circle,E20
