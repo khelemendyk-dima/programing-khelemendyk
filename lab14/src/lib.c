@@ -1,153 +1,265 @@
 /**
  * @file lib.c
- * @brief Файл з реалізацією функцій: знаходження кількості цілих та дробових
- * чисел, запису їх в показчики та друку результату.
+ * @brief Файл з реалізацією функцій: заповнення структури, рахувальник строк,
+ * знаходження найдовшої строки, заповнення структур та знаходження критерію
+ * для сортування, знаходження кількості згорівших лампочок, запис номерів
+ * згорівших лампочок, друк результату у консоль, запис результату у файл.
  *
  * @author Khelemendyk D.
- * @date 09-jan-2022
+ * @date 20-jan-2022
  */
 
 #include "lib.h"
 
-int get_int(char buff[])
+int write_to_struct(char *s, const char *delim, struct bulb *e)
 {
-	int num_int = 0; // рахувальник
-	for (int i = 0; i < (int)strlen(buff); i++) {
-		if (isdigit(buff[i])) { // перевірка на число
-			num_int++;
-			while (isdigit(buff[i])) {
-				// якщо дробове рахувальник -= 1
-				if (isdigit(buff[i]) && buff[i + 1] == '.' && isdigit(buff[i + 2])) {
-					num_int--;
-					while (isdigit(buff[i + 2])) {
-						i++;
-					}
-				}
-				i++;
+	char *p = strtok(s, delim); // розбиваю строку на частини
+	// виконую запис в структуру
+	if (!p || !strncpy(e->is_on, p, sizeof(e->is_on) - 1))
+		return 1;
+	if (!(p = strtok(NULL, delim)) || !strncpy(e->is_burn, p, sizeof(e->is_burn) - 1))
+		return 1;
+	if (!(p = strtok(NULL, delim)) || !strncpy(e->factory, p, sizeof(e->factory) - 1))
+		return 1;
+	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(e->reverse_cntr)) != 1)
+		return 1;
+	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(e->vatt)) != 1)
+		return 1;
+	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(e->temp)) != 1)
+		return 1;
+	if (!(p = strtok(NULL, delim)) || !strncpy(e->form, p, sizeof(e->form) - 1))
+		return 1;
+	if (!(p = strtok(NULL, delim)) || !strncpy(e->type_plinth, p, sizeof(e->type_plinth) - 1))
+		return 1;
+
+	return 0;
+}
+int lines_count(char *argv[])
+{
+	int lines = 0;
+	FILE *f = fopen(argv[1], "r");
+	if (!f) {
+		perror("lines_count");
+		return 1;
+	}
+	while (!feof(f)) {
+		if (fgetc(f) == '\n')
+			lines++;
+	}
+	fclose(f);
+	return lines;
+}
+int longest_line(char *argv[])
+{
+	int max = 0;
+	int num = 0;
+	FILE *f = fopen(argv[1], "r");
+	if (!f) {
+		perror("longest_line");
+		return 1;
+	}
+	while (!feof(f)) {
+		num++;
+		if (fgetc(f) == '\n') {
+			if (num > max) {
+				max = num;
+				num = 0;
 			}
 		}
 	}
-	return num_int;
+	fclose(f);
+	return max;
 }
-int get_float(char buff[])
+int get_struct_and_type(struct bulb *bulbs, int count_bulbs, char *argv[], char *type_for_sort)
 {
-	int num_float = 0; // рахувальник
-	for (int i = 0; i < (int)strlen(buff); i++) {
-		if (isdigit(buff[i])) { // перевірка на число
-			while (isdigit(buff[i])) {
-				// якщо дробове рахувальник += 1
-				if (isdigit(buff[i]) && buff[i + 1] == '.' && isdigit(buff[i + 2])) {
-					num_float++;
-					while (isdigit(buff[i + 2])) {
-						i++;
-					}
-				}
-				i++;
-			}
+	int size_buff = longest_line(argv); // розмір буфера
+	FILE *f = fopen(argv[1], "r");
+	if (!f) {
+		perror("");
+		return 1;
+	}
+	fgets(type_for_sort, 50, f); // знаходю критерій для сортування якщо він є
+	char *buff = (char *)malloc((unsigned int)size_buff + 1);
+	for (int i = 0; i < count_bulbs; i++) {
+		fgets(buff, size_buff + 1, f);
+		if (write_to_struct(buff, ",", &bulbs[i])) // заповнюю масив структур
+			fprintf(stderr, "Error!\n");
+	}
+	fclose(f);
+	free(buff);
+	return 0;
+}
+int is_burn_bulbs(struct bulb *bulbs, int count_bulbs)
+{
+	char yes[] = "yes";
+	int n = 0; // рахувальник згорівших лампочок
+	for (int i = 0; i < count_bulbs; i++) {
+		if (strcmp(bulbs[i].is_burn, yes) == 0) {
+			n++;
 		}
 	}
-	return num_float;
+	return n;
 }
-void get_num_int(char buff[], int *arr_int)
+void find_burn_bulbs(struct bulb *bulbs, int count_bulbs, int *burn_bulbs)
 {
-	int p = 0; // рахувальник для показчика
-	for (int i = 0; i < (int)strlen(buff); i++) {
-		if (isdigit(buff[i])) { // перевірка на число
-			*(arr_int + p) = atoi(&buff[i]); // запис в показчик
-			p++;
-			while (isdigit(buff[i])) {
-				// якщо число дробове рахувальник -= 1
-				if (isdigit(buff[i]) && buff[i + 1] == '.' && isdigit(buff[i + 2])) {
-					p--;
-					while (isdigit(buff[i + 2])) {
-						i++;
-					}
-				}
-				i++;
-			}
-		}
-	}
-}
-void get_num_float(char buff[], float *arr_float)
-{
-	int p = 0; // рахувальник для показчика
-	for (int i = 0; i < (int)strlen(buff); i++) {
-		if (isdigit(buff[i])) {
-			*(arr_float + p) = (float)atof(&buff[i]);
-			while (isdigit(buff[i])) {
-				// якщо дробове записую в показчик
-				if (isdigit(buff[i]) && buff[i + 1] == '.' && isdigit(buff[i + 2])) {
-					p++;
-					while (isdigit(buff[i])) {
-						i++;
-					}
-					float tmp = 0; // змінна для дробної частини числа
-					tmp = (float)atof(&buff[i + 2]); // запис дроб. част.
-					while (isdigit(buff[i + 2])) {
-						i++;
-					}
-					// перетворюю tmp в дробну частину числа
-					while (tmp > 1) {
-						tmp = tmp / 10;
-					}
-					*(arr_float + p) += tmp; // додаю дроб. част.
-				}
-				i++;
-			}
+	char yes[] = "yes";
+	int n = 0;
+	for (int i = 0; i < count_bulbs; i++) {
+		if (strcmp(bulbs[i].is_burn, yes) == 0) {
+			*(burn_bulbs + n) = i; // запис номеру згорівшої лампочки
+			n++;
 		}
 	}
 }
-/*
-void print_res(int *arr_int, float *arr_float, int num_int, int num_float)
+void print_res_screen(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int num_burn_bulbs, char *type_for_sort)
 {
-	int size = num_int + num_float; // всього чисел
-	printf("Результат:\n");
-	// друкую кількість чисел взагалі
-	if (size == 1) {
-		printf("У цьому тексті одне число.");
-	} else if (size > 1 && size < 5) {
-		printf("У цьому тексті %d числа.", size);
-	} else if (size > 4) {
-		printf("У цьому тексті %d чисел.", size);
+	// друк всіх лампочок
+	if (count_bulbs == 1) {
+		printf("Ваша лампочка:\n");
+	} else if (count_bulbs > 1) {
+		printf("Ваші лампочки:\n");
 	}
-	if (num_int != 0) {
-		printf("\n");
+	for (int i = 0; i < count_bulbs; i++) {
+		printf("Лампочка %d: %s, %s, %s, %d, ", i + 1, bulbs[i].is_on, bulbs[i].is_burn, bulbs[i].factory, bulbs[i].reverse_cntr);
+		printf("%d, %d, %s, %s", bulbs[i].vatt, bulbs[i].temp, bulbs[i].form, bulbs[i].type_plinth);
 	}
-	// друкую кількість цілих чисел
-	if (num_int == 1) {
-		printf("Знайдено 1 ціле число: ");
-	} else if (num_int > 1 && num_int < 5) {
-		printf("Знайдено %d цілих числа: ", num_int);
-	} else if (num_int > 4) {
-		printf("Знайдено %d цілих чисел: ", num_int);
+	// друк перегорівших лампочок
+	if (num_burn_bulbs == 1) {
+		printf("\nПерегорівша лампочка:\n");
+	} else if (num_burn_bulbs > 1) {
+		printf("\nПерегорівші лампочки:\n");
 	}
-	// перераховую цілі числа
-	for (int i = 0; i < num_int; i++) {
-		if (i == num_int - 1) {
-			printf("%d.", *(arr_int + i));
-		} else {
-			printf("%d, ", *(arr_int + i));
-		}
-	}
-	if (num_float != 0) {
-		printf("\n");
-	}
-	// друкую кількість дробових чисел
-	if (num_float == 1) {
-		printf("Знайдено 1 ціле число: ");
-	} else if (num_float > 1 && num_float < 5) {
-		printf("Знайдено %d дробових числа: ", num_float);
-	} else if (num_float > 4) {
-		printf("Знайдено %d дробових чисел: ", num_float);
-	}
-	// перераховую дробові числа
-	for (int i = 0; i < num_float; i++) {
-		if (i == num_float - 1) {
-			printf("%.2f.", *(arr_float + i));
-		} else {
-			printf("%.2f, ", *(arr_float + i));
-		}
+	for (int i = 0; i < num_burn_bulbs; i++) {
+		int n = *(burn_bulbs + i);
+		printf("Лампочка %d: %s, %s, %s, ", *(burn_bulbs + i) + 1, bulbs[n].is_on, bulbs[n].is_burn, bulbs[n].factory);
+		printf("%d, %d, %d, %s, %s", bulbs[n].reverse_cntr, bulbs[n].vatt, bulbs[n].temp, bulbs[n].form, bulbs[n].type_plinth);
 	}
 	printf("\n");
+	// сортування за заданими критеріями
+	char vkl[] = "Ввімкнена лампочка\n";
+	char burn[] = "Перегорівша лампочка\n";
+	char prod[] = "Виробник лампочки\n";
+	char invers[] = "Зворотній лічильник\n";
+	char num_vatt[] = "Кількість ватт\n";
+	char temprtr[] = "Температура кольору\n";
+	char forma[] = "Форма\n";
+	char type[] = "Тип цоколю\n";
+	if (strcmp(type_for_sort, vkl) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %s\n", i + 1, bulbs[i].is_on);
+		}
+	} else if (strcmp(type_for_sort, burn) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %s\n", i + 1, bulbs[i].is_burn);
+		}
+	} else if (strcmp(type_for_sort, prod) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %s\n", i + 1, bulbs[i].factory);
+		}
+	} else if (strcmp(type_for_sort, invers) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %d\n", i + 1, bulbs[i].reverse_cntr);
+		}
+	} else if (strcmp(type_for_sort, num_vatt) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %d\n", i + 1, bulbs[i].vatt);
+		}
+	} else if (strcmp(type_for_sort, temprtr) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %d\n", i + 1, bulbs[i].temp);
+		}
+	} else if (strcmp(type_for_sort, forma) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %s\n", i + 1, bulbs[i].form);
+		}
+	} else if (strcmp(type_for_sort, type) == 0) {
+		printf("Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			printf("Лампочка %d: %s", i + 1, bulbs[i].type_plinth);
+		}
+	}
 }
-*/
+void print_res_file(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int num_burn_bulbs, char *type_for_sort, char *argv[])
+{
+	FILE *f = fopen(argv[2], "w");
+	// запис всіх лампочок у файл
+	if (count_bulbs == 1) {
+		fprintf(f, "Ваша лампочка:\n");
+	} else if (count_bulbs > 1) {
+		fprintf(f, "Ваші лампочки:\n");
+	}
+	for (int i = 0; i < count_bulbs; i++) {
+		fprintf(f, "Лампочка %d: %s, %s, %s, %d, ", i + 1, bulbs[i].is_on, bulbs[i].is_burn, bulbs[i].factory, bulbs[i].reverse_cntr);
+		fprintf(f, "%d, %d, %s, %s", bulbs[i].vatt, bulbs[i].temp, bulbs[i].form, bulbs[i].type_plinth);
+	}
+	// запис перегорівших лампочок
+	if (num_burn_bulbs == 1) {
+		fprintf(f, "\nПерегорівша лампочка:\n");
+	} else if (num_burn_bulbs > 1) {
+		fprintf(f, "\nПерегорівші лампочки:\n");
+	}
+	for (int i = 0; i < num_burn_bulbs; i++) {
+		int n = *(burn_bulbs + i);
+		fprintf(f, "Лампочка %d: %s, %s, %s, ", *(burn_bulbs + i) + 1, bulbs[n].is_on, bulbs[n].is_burn, bulbs[n].factory);
+		fprintf(f, "%d, %d, %d, %s, %s", bulbs[n].reverse_cntr, bulbs[n].vatt, bulbs[n].temp, bulbs[n].form, bulbs[n].type_plinth);
+	}
+	fprintf(f, "\n");
+	// запис сортування за заданими критеріями
+	char vkl[] = "Ввімкнена лампочка\n";
+	char burn[] = "Перегорівша лампочка\n";
+	char prod[] = "Виробник лампочки\n";
+	char reverse[] = "Зворотній лічильник\n";
+	char num_vatt[] = "Кількість ватт\n";
+	char temprtr[] = "Температура кольору\n";
+	char forma[] = "Форма\n";
+	char type[] = "Тип цоколю\n";
+	if (strcmp(type_for_sort, vkl) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %s\n", i + 1, bulbs[i].is_on);
+		}
+	} else if (strcmp(type_for_sort, burn) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %s\n", i + 1, bulbs[i].is_burn);
+		}
+	} else if (strcmp(type_for_sort, prod) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %s\n", i + 1, bulbs[i].factory);
+		}
+	} else if (strcmp(type_for_sort, reverse) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %d\n", i + 1, bulbs[i].reverse_cntr);
+		}
+	} else if (strcmp(type_for_sort, num_vatt) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %d\n", i + 1, bulbs[i].vatt);
+		}
+	} else if (strcmp(type_for_sort, temprtr) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %d\n", i + 1, bulbs[i].temp);
+		}
+	} else if (strcmp(type_for_sort, forma) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %s\n", i + 1, bulbs[i].form);
+		}
+	} else if (strcmp(type_for_sort, type) == 0) {
+		fprintf(f, "Заданий критерій для сортування: %s", type_for_sort);
+		for (int i = 0; i < count_bulbs; i++) {
+			fprintf(f, "Лампочка %d: %s", i + 1, bulbs[i].type_plinth);
+		}
+	}
+	fclose(f);
+}

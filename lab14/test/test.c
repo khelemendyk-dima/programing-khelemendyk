@@ -1,88 +1,88 @@
 /**
  * @file test.c
- * @brief Файл з тестами на реалізації функцій: знаходження кількості цілих та
- * дробових чисел, запису їх в показчики.
+ * @brief Файл з тестами на реалізації функцій: заповнення структури,
+ * знаходження кількості згорівших лампочок, запис номерів згорівших лампочок.
  *
  * @author Khelemendyk D.
- * @date 09-jan-2022
+ * @date 20-jan-2022
  * @version 0.1
  */
 
 #include "lib.h"
 #include <check.h>
-#define DATA_SIZE_BUFFER 1000 // розмір буферу
-#define DATA_SIZE_INT 5 // кількість цілих чисел
-#define DATA_SIZE_FLOAT 3 // кількість дробових чисел
-char buff[N] = "Добрий день, мене звати Іван! Я продав 1 яблуко, 22 \
-		апельсинів, 333 кг бананів та 4 ящика гранатів. З продажи \
-		яблука я отримав 5 грн, апельсинів - 122.55 грн, \
-		бананів - 1500.64 грн, гранатів - 215.77 грн.";
 
 /*
- * Верифікація роботи функції {@link get_int}
- * на основі вхідних даних буферу та очікуваних даних
+ * Верифікація роботи функції {@link write_to_struct}
+ * на основі вхідних даних буферу, роздільника, структури та очікуваних даних
  *
  * @return стан проходження тестів: 1 - тести пройшли успішно, 0 - частина
  * тестів не пройшла	
 */
-START_TEST(test_of_get_int)
+START_TEST(test_write_to_struct)
 {
-	int expected_value = 5;
-	int actual_value = get_int(buff);
+	char buffer[] = "yes,no,TOV Roga ta koputa,20,15,1800,Globe,E40";
+	struct bulb data;
+	char expected_value[8][20] = { "yes", "no", "TOV Roga ta koputa", "20", "15", "1800", "Globe", "E40" };
+	write_to_struct(buffer, ",", &data);
+	ck_assert_str_eq(data.is_on, &expected_value[0][0]);
+	ck_assert_str_eq(data.is_burn, &expected_value[1][0]);
+	ck_assert_str_eq(data.factory, &expected_value[2][0]);
+	ck_assert_int_eq(data.reverse_cntr, atoi(&expected_value[3][0]));
+	ck_assert_int_eq(data.vatt, atoi(&expected_value[4][0]));
+	ck_assert_int_eq(data.temp, atoi(&expected_value[5][0]));
+	ck_assert_str_eq(data.form, &expected_value[6][0]);
+	ck_assert_str_eq(data.type_plinth, &expected_value[7][0]);
+}
+END_TEST
+
+/*
+ * Верифікація роботи функції {@link is_burn_bulbs}
+ * на основі вхідних даних буферів, структури, кількості лампочок
+ * та очікуваних даних
+ *
+ * @return стан проходження тестів: 1 - тести пройшли успішно, 0 - частина
+ * тестів не пройшла	
+*/
+START_TEST(test_is_burn_bulbs)
+{
+#define DATA_COUNT 3 // кількість лампочок
+	char buffer_1[] = "yes,yes,TOV Roga ta koputa,20,15,1800,Globe,E40";
+	char buffer_2[] = "no,no,TOV Koputa,30,25,1900,Pear,E27";
+	char buffer_3[] = "yes,yes,TOV Romashka,25,150,2500,Candle,E50";
+	struct bulb data[3];
+	write_to_struct(buffer_1, ",", &data[0]);
+	write_to_struct(buffer_2, ",", &data[1]);
+	write_to_struct(buffer_3, ",", &data[2]);
+	int actual_value = is_burn_bulbs(data, DATA_COUNT);
+	int expected_value = 2;
 	ck_assert_int_eq(expected_value, actual_value);
 }
 END_TEST
 
 /*
- * Верифікація роботи функції {@link get_float}
- * на основі вхідних даних буферу та очікуваних даних
+ * Верифікація роботи функції {@link find_burn_bulbs}
+ * на основі вхідних даних буферів, показчику та очікуваних даних
  *
  * @return стан проходження тестів: 1 - тести пройшли успішно, 0 - частина
  * тестів не пройшла	
 */
-START_TEST(test_of_get_float)
+START_TEST(test_of_find_burn_bulbs)
 {
-	int expected_value = 3;
-	int actual_value = get_float(buff);
-	ck_assert_int_eq(expected_value, actual_value);
-}
-END_TEST
-
-/*
- * Верифікація роботи функції {@link get_num_int}
- * на основі вхідних даних буферу, показчику та очікуваних даних
- *
- * @return стан проходження тестів: 1 - тести пройшли успішно, 0 - частина
- * тестів не пройшла	
-*/
-START_TEST(test_of_get_num_int)
-{
-	int *array_of_int = (int *)malloc((DATA_SIZE_INT + 1) * sizeof(int));
-	int expected_values[] = { 1, 22, 333, 4, 5 };
-	get_num_int(buff, array_of_int);
-	for (int i = 0; i < DATA_SIZE_INT; i++) {
-		ck_assert_int_eq(expected_values[i], *(array_of_int + i));
+#define DATA_COUNT 3 // кількість лампочок
+	char buffer_1[] = "yes,yes,TOV Roga ta koputa,20,15,1800,Globe,E40";
+	char buffer_2[] = "no,no,TOV Koputa,30,25,1900,Pear,E27";
+	char buffer_3[] = "yes,yes,TOV Romashka,25,150,2500,Candle,E50";
+	struct bulb data[3];
+	write_to_struct(buffer_1, ",", &data[0]);
+	write_to_struct(buffer_2, ",", &data[1]);
+	write_to_struct(buffer_3, ",", &data[2]);
+	int *burn_bulbs = (int *)malloc(2 * sizeof(int));
+	int expected_value[2] = { 0, 2 };
+	find_burn_bulbs(data, DATA_COUNT, burn_bulbs);
+	for (int i = 0; i < 2; i++) {
+		ck_assert_int_eq(expected_value[i], *(burn_bulbs + i));
 	}
-	free(array_of_int);
-}
-END_TEST
-
-/*
- * Верифікація роботи функції {@link get_num_float}
- * на основі вхідних даних буферу, показчику та очікуваних даних
- *
- * @return стан проходження тестів: 1 - тести пройшли успішно, 0 - частина
- * тестів не пройшла	
-*/
-START_TEST(test_of_get_num_float)
-{
-	float *array_of_float = (float *)malloc((DATA_SIZE_FLOAT + 1) * sizeof(float));
-	float expected_values[] = { (float)122.55, (float)1500.64, (float)215.77 };
-	get_num_float(buff, array_of_float);
-	for (int i = 0; i < DATA_SIZE_FLOAT; i++) {
-		ck_assert_float_eq_tol(expected_values[i], *(array_of_float + i), 0.001);
-	}
-	free(array_of_float);
+	free(burn_bulbs);
 }
 END_TEST
 
@@ -100,11 +100,10 @@ END_TEST
 int main(void)
 {
 	Suite *s = suite_create("Programing");
-	TCase *tc_core = tcase_create("lab12");
-	tcase_add_test(tc_core, test_of_get_int);
-	tcase_add_test(tc_core, test_of_get_float);
-	tcase_add_test(tc_core, test_of_get_num_int);
-	tcase_add_test(tc_core, test_of_get_num_float);
+	TCase *tc_core = tcase_create("lab14");
+	tcase_add_test(tc_core, test_write_to_struct);
+	tcase_add_test(tc_core, test_is_burn_bulbs);
+	tcase_add_test(tc_core, test_of_find_burn_bulbs);
 	suite_add_tcase(s, tc_core);
 	SRunner *sr = srunner_create(s);
 	srunner_run_all(sr, CK_VERBOSE);
