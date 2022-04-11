@@ -9,36 +9,27 @@
  * згорівших лампочок, друк результату у консоль, запис результату у файл.
  *
  * @author Khelemendyk D.
- * @date 20-jan-2022
+ * @date 11-apr-2022
  * @version 0.1
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <string.h>
 
 /**
  * Структура "лампочка"
  */
-struct bulb {
+struct Bulb {
 	char is_on[5];
-	char is_burn[5];
+	char is_burned[5];
 	char factory[30];
-	int reverse_cntr;
+	int reverse_counter;
 	int vatt;
-	int temp;
-	char form[15];
-	char type_plinth[10];
+	int color_temp;
+	char shape[15];
+	char base_type[10];
 };
-
-/**
- * Заповнення структури.
- *
- * Функція розбиває строку на частини та записує дані у структуру.
- * Отримує строку, роздільник та структуру.
- */
-int write_to_struct(char *s, const char *delim, struct bulb *e);
 
 /**
  * Рахувальник строк.
@@ -46,15 +37,7 @@ int write_to_struct(char *s, const char *delim, struct bulb *e);
  * Функція рахує кількість строк у файлі. Отримує масив з аргументом(введений
  * користувачем).
  */
-int lines_count(char *argv[]);
-
-/**
- * Найдовша строка.
- *
- * Функція знаходе кількість символів у найдовшій строці. Отримує масив з
- * аргументом(введений користувачем).
- */
-int longest_line(char *argv[]);
+int count_lines(char *argv[]);
 
 /**
  * Заповнення структур та отримання критерія для сортування.
@@ -64,7 +47,23 @@ int longest_line(char *argv[]);
  * лампочок, масив з аргументом(введений користувачем), та критерій для
  * сортування.
  */
-int get_struct_and_type(struct bulb *bulbs, int count_bulbs, char *argv[], char *type_for_sort);
+int get_struct_and_criterion(struct Bulb *bulbs, int number_bulbs, char *argv[], char *criterion_for_sorting);
+
+/**
+ * Найдовша строка.
+ *
+ * Функція знаходе кількість символів у найдовшій строці. Отримує масив з
+ * аргументом(введений користувачем).
+ */
+int max_string_length(char *argv[]);
+
+/**
+ * Заповнення структури.
+ *
+ * Функція розбиває строку на частини та записує дані у структуру.
+ * Отримує строку, роздільник та структуру.
+ */
+int write_to_struct(char *string, const char *delim, struct Bulb *bulbs);
 
 /**
  * Чи згорівша лампочка.
@@ -72,7 +71,7 @@ int get_struct_and_type(struct bulb *bulbs, int count_bulbs, char *argv[], char 
  * Функція рахує кількість згорівших лампочок. Отримує структуру та кількість
  * лампочок.
  */
-int is_burn_bulbs(struct bulb *bulbs, int count_bulbs);
+int is_burned_bulb(struct Bulb *bulbs, int number_bulbs);
 
 /**
  * Знайти згорівшу лампочку та записати її номер.
@@ -80,7 +79,7 @@ int is_burn_bulbs(struct bulb *bulbs, int count_bulbs);
  * Функція знаходе номера згорівших лампочок та записує їх у показчик. Отримує
  * структуру, кількість лампочок та показчик
  */
-void find_burn_bulbs(struct bulb *bulbs, int count_bulbs, int *burn_bulbs);
+void get_index_burned_bulbs(struct Bulb *bulbs, int number_bulbs, int *burned_bulbs);
 
 /**
  * Друк результату у консоль.
@@ -89,7 +88,7 @@ void find_burn_bulbs(struct bulb *bulbs, int count_bulbs, int *burn_bulbs);
  * лампочок, показчик з номерами згорівших лампочок, кількість згорівших
  * лампочок та критерій для сортування.
  */
-void print_res_screen(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int num_burn_bulbs, char *type_for_sort);
+void print_res_screen(struct Bulb *bulbs, int number_bulbs, int *burned_bulbs, int number_burned_bulbs, char *criterion_for_sorting);
 
 /**
  * Друк результату у файл.
@@ -99,6 +98,6 @@ void print_res_screen(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int 
  * лампочок, критерій для сортування та масив з аргументами(введеними
  * користувачем).
  */
-void print_res_file(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int num_burn_bulbs, char *type_for_sort, char *argv[]);
+void print_res_file(struct Bulb *bulbs, int number_bulbs, int *burned_bulbs, int number_burned_bulbs, char *criterion_for_sorting, char *argv[]);
 
 #endif

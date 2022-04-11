@@ -13,9 +13,12 @@ all: clean prep compile check
 main.bin: src/main.c
 	$(CC) $(C_OPTS) $< -o ./dist/$@
 test.bin: test/test.c
-	$(CC) $(C_OPTS) $< $(ARCH) -o ./dist/$@ -lcheck -lm -lsubunit
+	$(CC) $(C_OPTS) $< -fprofile-instr-generate -fcoverage-mapping -o ./dist/$@ -lcheck -lm -lrt -lpthread -lsubunit
 test: clean prep compile
-	./dist/test.bin
+	LLVM_PROFILE_FILE="dist/test.profraw" ./dist/test.bin
+	llvm-profdata merge -sparse dist/test.profraw -o dist/test.profdata
+	llvm-cov report dist/test.bin -instr-profile=dist/test.profdata src/*.c
+	llvm-cov show dist/test.bin -instr-profile=dist/test.profdata src/*.c --format html > dist/coverage.html
 run: clean prep compile
 	./dist/main.bin
 doxygen:

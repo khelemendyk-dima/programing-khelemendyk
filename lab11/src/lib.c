@@ -22,10 +22,16 @@ int size_of_matrix()
 }
 void input_matrix(float **mtx, int size)
 {
-	char s[] = "Input your matrix: ";
+	char s[] = "Input your matrix ";
 	for (int r = 0; r < size; r++) {
 		for (int c = 0; c < size; c++) {
 			write(1, &s, strlen(s));
+			char row = (char)r + '1';
+			char column = (char)c + '1';
+			write(1, &row, 1);
+			write(1, " ", 1);
+			write(1, &column, 1);
+			write(1, ": ", 2);
 			read(2, buffer, N);
 			*(*(mtx + r) + c) = (float)atof(buffer);
 		}

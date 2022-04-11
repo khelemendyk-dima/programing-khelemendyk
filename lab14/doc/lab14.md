@@ -6,7 +6,7 @@
 
 * Хелемендик Дмитро Олегович;
 * студент групи КІТ-121д;
-* 20-січ-2022.
+* 14-квіт-2022.
 
 ### 1.2 Загальне завдання
 
@@ -16,7 +16,7 @@
 
 ### 2.1 Функціональне призначення
 
-Програма призначена для знаходження згорівших лампочок за допомогою зчитування даних з файла та сортування за заданим критерієм. Програма працює за допомогою функцій, що задекларовані в *lib.h*, *stdlib.h*, *string.h*, *stdio.h* та *ctype.h*.
+Програма призначена для знаходження згорівших лампочок за допомогою зчитування даних з файла та сортування за заданим критерієм. Програма працює за допомогою функцій, що задекларовані в *lib.h*, *stdlib.h*, *string.h* та *stdio.h*.
 
 Результат зберігається у змінній *bulbs*.
 
@@ -33,7 +33,7 @@
 #### Функція заповнення структури
 
 ```
-	int write_to_struct(char *s, const char *delim, struct bulb *e);
+	int write_to_struct(char *string, const char *delim, struct Bulb *bulbs);
 ```
 
 *Призначення*: заповнить структуру даними.
@@ -42,14 +42,14 @@
 
 **Аргументи**:
 
-- *s* - строка;
+- *string* - строка;
 - *delim* - роздільник;
-- *e* - показчик на структуру лампочки.
+- *bulbs* - показчик на структуру лампочки.
 
 #### Функція підрахунку кількості строк
 
 ```
-	int lines_count(char *argv[]);
+	int count_lines(char *argv[]);
 ```
 
 *Призначення*: отримання кількості строк для визначення кількості лампочок.
@@ -63,7 +63,7 @@
 #### Функція знаходження найдовшої строки
 
 ```
-	int longest_line(char *argv[]);
+	int max_string_length(char *argv[]);
 ```
 
 *Призначення*: знаходження найдовшої строки для визначення розміру буферу.
@@ -77,7 +77,7 @@
 #### Функція заповнення структур та отримання критерія для сортування
 
 ```
-	int get_struct_and_type(struct bulb *bulbs, int count_bulbs, char *argv[], char *type_for_sort);
+	int get_struct_and_criterion(struct Bulb *bulbs, int number_bulbs, char *argv[], char *criterion_for_sorting);
 ```
 
 *Призначення*: заповнення структур та отримання критерія для сортування.
@@ -87,14 +87,14 @@
 **Аргументи**:
 
 - *bulbs* - показчик на структуру;
-- *count_bulbs* - кількість лампочок;
+- *number_bulbs* - кількість лампочок;
 - *argv* - масив з аргументи(введеними користувачем);
-- *type_for_sort* - показчик для критерія сортування. 
+- *criterion_for_sorting* - показчик для критерія сортування. 
 
 #### Функція знаходження згорівшої лампочки
 
 ```
-	int is_burn_bulbs(struct bulb *bulbs, int count_bulbs);
+	int is_burned_bulbs(struct bulb *bulbs, int number_bulbs);
 ```
 
 *Призначення*: визначити кількість згорівших лампочок.
@@ -104,12 +104,12 @@
 **Аргументи**:
 
 - *bulbs* - показчик на структуру;
-- *count_bulbs* - кількість лампочок.
+- *number_bulbs* - кількість лампочок.
 
 #### Функція запису номера згорівшої лампочки
 
 ```
-	void find_burn_bulbs(struct bulb *bulbs, int count_bulbs, int *burn_bulbs);
+	void get_index_burned_bulbs(struct Bulb *bulbs, int number_bulbs, int *burned_bulbs);
 ```
 
 *Призначення*: записати номер згорівшої лампочки у показчик.
@@ -119,13 +119,13 @@
 **Аргументи**:
 
 - *bulbs* - показчик на структуру;
-- *count_bulbs* - кількість лампочок;
-- *burn_bulbs* - показчик для зберігання номерів згорівших лампочок.
+- *number_bulbs* - кількість лампочок;
+- *burned_bulbs* - показчик для зберігання номерів згорівших лампочок.
 
 #### Функція друку результату у консоль
 
 ```
-	void print_res_screen(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int num_burn_bulbs, char *type_for_sort);
+	void print_res_screen(struct Bulb *bulbs, int number_bulbs, int *burned_bulbs, int number_burned_bulbs, char *criterion_for_sorting);
 ```
 
 *Призначення*: друк результату у вікно консолі.
@@ -135,15 +135,15 @@
 **Аргументи**:
 
 - *bulbs* - показчик на структуру;
-- *count_bulbs* - кількість лампочок;
-- *burn_bulbs* - показчик для зберігання номерів згорівших лампочок;
-- *num_burn_bulbs* - кількість згорівших лампочок;
-- *type_for_sort* - показчик для критерія сортування. 
+- *number_bulbs* - кількість лампочок;
+- *burned_bulbs* - показчик для зберігання номерів згорівших лампочок;
+- *number_burned_bulbs* - кількість згорівших лампочок;
+- *criterion_for_sorting* - показчик для критерія сортування. 
 
 #### Функція друку результату у файл
 
 ```
-	void print_res_file(struct bulb *bulbs, int count_bulbs, int *burn_bulbs, int num_burn_bulbs, char *type_for_sort, char *argv[]);
+	void print_res_file(struct Bulb *bulbs, int number_bulbs, int *burned_bulbs, int number_burned_bulbs, char *criterion_for_sorting, char *argv[]);
 ```
 
 *Призначення*: друк результату у файл.
@@ -153,10 +153,10 @@
 **Аргументи**:
 
 - *bulbs* - показчик на структуру;
-- *count_bulbs* - кількість лампочок;
-- *burn_bulbs* - показчик для зберігання номерів згорівших лампочок;
-- *num_burn_bulbs* - кількість згорівших лампочок;
-- *type_for_sort* - показчик для критерія сортування;
+- *number_bulbs* - кількість лампочок;
+- *burned_bulbs* - показчик для зберігання номерів згорівших лампочок;
+- *number_burned_bulbs* - кількість згорівших лампочок;
+- *criterion_for_sorting* - показчик для критерія сортування;
 - *argv* - масив з аргументи(введеними користувачем).
 
 #### Основна функція
@@ -169,13 +169,13 @@
 
 *Опис роботи*: 
 
- - знаходю кількість лампочок за допомогою функції lines_count та зберігаю дані у змінній count_bulbs;
+ - знаходю кількість лампочок за допомогою функції count_lines та зберігаю дані у змінній number_bulbs;
  - виділяю пам'ять для масиву символів, у якому буде зберігаться критерій для сортування;
- - виділяю пам'ять для структури розміром count_bulbs;
- - далі зчитую дані з файлу, записую критерій(якщо він є), заповнюю структуру шляхом виклику функції get_struct_and_type;
- - знаходю кількість згорівших лампочок функцією is_burn_bulbs та зберігаю у  змінній num_burn_bulbs;
+ - виділяю пам'ять для структури розміром number_bulbs;
+ - далі зчитую дані з файлу, записую критерій(якщо він є), заповнюю структуру шляхом виклику функції get_struct_and_criterion;
+ - знаходю кількість згорівших лампочок функцією is_burned_bulbs та зберігаю у змінній number_burned_bulbs;
  - виділяю пам'ять для масиву з номерами згорівших лампочок;
- - знаходю номера згорівших лампочок та зберігаю їх в показчику burn_bulbs;
+ - знаходю номера згорівших лампочок та зберігаю їх в показчику burned_bulbs;
  - друкую результат у вікно консолі за допомогою функції print_res_screen;
  - якщо введений третий аргумент - друкую результат у файл шляхом виклику функції print_res_file;
  - звільнюю пам'ять;
@@ -210,35 +210,36 @@
 #### Запис до структури
 
 ```
-	char *p = strtok(s, delim); // розбиваю строку на частини
-	// виконую запис в структуру
-	if (!p || !strncpy(e->is_on, p, sizeof(e->is_on) - 1))
+	char *p = strtok(string, delim);
+	if (!p || !strncpy(bulbs->is_on, p, sizeof(bulbs->is_on) - 1))
 		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(e->is_burn, p, sizeof(e->is_burn) - 1))
+	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->is_burned, p, sizeof(bulbs->is_burned) - 1))
 		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(e->factory, p, sizeof(e->factory) - 1))
+	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->factory, p, sizeof(bulbs->factory) - 1))
 		return 1;
-	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(e->reverse_cntr)) != 1)
+	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(bulbs->reverse_counter)) != 1)
 		return 1;
-	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(e->vatt)) != 1)
+	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(bulbs->vatt)) != 1)
 		return 1;
-	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(e->temp)) != 1)
+	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(bulbs->color_temp)) != 1)
 		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(e->form, p, sizeof(e->form) - 1))
+	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->shape, p, sizeof(bulbs->shape) - 1))
 		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(e->type_plinth, p, sizeof(e->type_plinth) - 1))
+	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->base_type, p, sizeof(bulbs->base_type) - 1))
 		return 1;
+
 	return 0;
 ```
 
 #### Заповнення структур та отримання критерію сортування
 
 ```
-	fgets(type_for_sort, 50, f); // знаходю критерій для сортування якщо він є
-	char *buff = (char *)malloc((unsigned int)size_buff + 1);
-	for (int i = 0; i < count_bulbs; i++) {
-		fgets(buff, size_buff + 1, f);
-		if (write_to_struct(buff, ",", &bulbs[i])) // заповнюю масив структур
+	fgets(criterion_for_sorting, 50, f);
+	int size_buffer = max_string_length(argv);
+	char *buffer = (char *)malloc((unsigned int)size_buffer);
+	for (int i = 0; i < number_bulbs; i++) {
+		fgets(buffer, size_buffer, f);
+		if (write_to_struct(buffer, ",", (bulbs + i))) // заповнюю масив структур
 			fprintf(stderr, "Error!\n");
 	}
 ```
@@ -268,25 +269,24 @@
 	Breakpoint 1: where = main.bin`main + 233 at main.c:69:2, address = 0x0000000000402a49
 	(lldb) r
 	Process 5252 launched: '/home/dima/dev/programing-khelemendyk/lab14/dist/main.bin' (x86_64)
-	Ваші лампочки:
-	Лампочка 1: yes, no, TOV Roga ta koputa, 20, 15, 1800, Globe, E40
-	Лампочка 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
-	Лампочка 3: no, no, TOV Koputa, 30, 25, 1900, Pear, E27
-	Лампочка 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
-	Лампочка 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
+	Your bulbs:
+	Bulb 1: yes, no, TOV Roga ta koputa, 20, 15, 1800, Globe, E40
+	Bulb 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
+	Bulb 3: no, no, TOV Koputa, 30, 25, 1900, Pear, E27
+	Bulb 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
+	Bulb 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
 
-	Перегорівші лампочки:
-	Лампочка 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
-	Лампочка 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
-	Лампочка 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
+	Burnt out bulbs:
+	Bulb 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
+	Bulb 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
+	Bulb 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
 
-	Заданий критерій для сортування: Виробник лампочки
-	Лампочка 1: TOV Roga ta koputa
-	Лампочка 2: TOV Roga ta oleni
-	Лампочка 3: TOV Koputa
-	Лампочка 4: TOV Romashka
-	Лампочка 5: TOV Kapysta
-	Process 5252 stopped
+	Your criterion for sorting: Bulb manufacturer
+	Bulb 1: TOV Roga ta koputa
+	Bulb 2: TOV Roga ta oleni
+	Bulb 3: TOV Koputa
+	Bulb 4: TOV Romashka
+	Bulb 5: TOV Kapysta
 	* thread #1, name = 'main.bin', stop reason = breakpoint 1.1
 	    frame #0: 0x0000000000402a49 main.bin`main(argc=3, argv=0x00007fffffffe048) at main.c:69:2
 	   66  			free(type_for_sort);
@@ -306,24 +306,24 @@
 
 ```
 	dima@dima-VirtualBox:~/dev/programing-khelemendyk/lab14/dist$ ./main.bin "/home/dima/dev/programing-khelemendyk/lab14/assets/input.txt" "output.txt"
-	Ваші лампочки:
-	Лампочка 1: yes, no, TOV Roga ta koputa, 20, 15, 1800, Globe, E40
-	Лампочка 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
-	Лампочка 3: no, no, TOV Koputa, 30, 25, 1900, Pear, E27
-	Лампочка 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
-	Лампочка 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
+	Your bulbs:
+	Bulb 1: yes, no, TOV Roga ta koputa, 20, 15, 1800, Globe, E40
+	Bulb 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
+	Bulb 3: no, no, TOV Koputa, 30, 25, 1900, Pear, E27
+	Bulb 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
+	Bulb 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
 
-	Перегорівші лампочки:
-	Лампочка 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
-	Лампочка 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
-	Лампочка 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
+	Burnt out bulbs:
+	Bulb 2: no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
+	Bulb 4: yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
+	Bulb 5: yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
 
-	Заданий критерій для сортування: Виробник лампочки
-	Лампочка 1: TOV Roga ta koputa
-	Лампочка 2: TOV Roga ta oleni
-	Лампочка 3: TOV Koputa
-	Лампочка 4: TOV Romashka
-	Лампочка 5: TOV Kapysta
+	Your criterion for sorting: Bulb manufacturer
+	Bulb 1: TOV Roga ta koputa
+	Bulb 2: TOV Roga ta oleni
+	Bulb 3: TOV Koputa
+	Bulb 4: TOV Romashka
+	Bulb 5: TOV Kapysta
 
 ```
 

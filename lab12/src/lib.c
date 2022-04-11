@@ -9,6 +9,51 @@
 
 #include "lib.h"
 
+int count_digit(char buff[])
+{
+	int counter = 0;
+	for (int i = 0; i < (int)strlen(buff); i++) {
+		if (isdigit(buff[i])) { // перевірка на число
+			counter++;
+			while (isdigit(buff[i]))
+				i++;
+		}
+	}
+	return counter;
+}
+void get_digit(char buff[], int *arr)
+{
+	int p = 0; // рахувальник для показчика
+	for (int i = 0; i < (int)strlen(buff); i++) {
+		if (isdigit(buff[i])) { // перевірка на число
+			*(arr + p) = atoi(&buff[i]); // запис в показчик
+			p++;
+			while (isdigit(buff[i]))
+				i++;
+		}
+	}
+}
+void print_digits(int *arr, int size)
+{
+	printf("Результат:\n");
+	// друкую кількість чисел взагалі
+	if (size == 1) {
+		printf("У цьому тексті одне число:\n");
+	} else if (size > 1 && size < 5) {
+		printf("У цьому тексті %d числа:\n", size);
+	} else if (size > 4) {
+		printf("У цьому тексті %d чисел:\n", size);
+	}
+	for (int i = 0; i < size; i++) {
+		if (i == size - 1) {
+			printf("%d.", *(arr + i));
+		} else {
+			printf("%d, ", *(arr + i));
+		}
+	}
+	printf("\n");
+}
+/*
 int get_int(char buff[])
 {
 	int num_int = 0; // рахувальник
@@ -149,3 +194,4 @@ void print_res(int *arr_int, float *arr_float, int num_int, int num_float)
 	}
 	printf("\n");
 }
+*/

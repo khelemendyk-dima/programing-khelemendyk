@@ -1,7 +1,7 @@
 /**
  * @mainpage
  * # Загальне завдання
- * Знайти всі числа, які зустрічаються в тексті.
+ * Знайти всі цифри, які зустрічаються в тексті.
  *
  * @author Khelemendyk D.
  * @date 09-jan-2022
@@ -44,6 +44,24 @@ int main()
 	char buff[N]; // буфер для stdin
 	fgets(buff, sizeof(buff), stdin); // зчитує дані з stdin
 	printf("Ваш текст:\n%s\n", buff); // друкує дані з stdin
+	int size = count_digit(buff); // кількість цифр
+	if (size <= 0) { // перевірка на наявність чисел взагалі
+		printf("Помилка...\n");
+		return 1;
+	} else {
+		int *array = (int *)malloc(((unsigned int)size + 1) * sizeof(int));
+		get_digit(buff, array); // заповнює масив цифрами
+		print_digits(array, size);
+		free(array);
+	}
+	return 0;
+}
+/*
+int main()
+{
+	char buff[N]; // буфер для stdin
+	fgets(buff, sizeof(buff), stdin); // зчитує дані з stdin
+	printf("Ваш текст:\n%s\n", buff); // друкує дані з stdin
 	int num_int = get_int(buff); // рахує кількість цілих чисел
 	int num_float = get_float(buff); // рахує кількість дробових чисел
 	int size = num_int + num_float; // загальна кількість чисел
@@ -63,3 +81,4 @@ int main()
 	}
 	return 0;
 }
+*/

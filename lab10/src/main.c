@@ -42,10 +42,10 @@ int main()
 	get_diagonal(parray1, parray2, N); // записує діагоналі в parray2
 	qsort(parray2, N, sizeof(int), cmp); // відсортовує масив
 	// звільнення пам'яті
+	free(parray2);
 	for (int i = 0; i < N; i++) {
 		free(*(parray1 + i));
 	}
 	free(parray1);
-	free(parray2);
 	return 0;
 }
