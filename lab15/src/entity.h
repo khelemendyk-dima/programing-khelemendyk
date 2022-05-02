@@ -61,12 +61,5 @@ void sort_by_criterion(struct Container *cont);
  * Отримує показчик на контейнер.
  */
 void print_bulbs(struct Container *cont);
-/**
- * Заповнення структури.
- *
- * Функція розбиває строку на частини та записує дані у структуру.
- * Отримує строку, роздільник та структуру.
- */
-int write_to_struct(char *string, const char *delim, struct Bulb *bulbs);
 
 #endif

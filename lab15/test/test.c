@@ -23,12 +23,10 @@ START_TEST(test_is_burned_bulb)
 	struct Container *container = malloc(1 * sizeof(struct Container));
 	container->bulbs = malloc(3 * sizeof(struct Bulb));
 	container->size = 3;
-	char buffer_1[] = "yes,yes,TOV Roga ta koputa,20,15,1800,Globe,E40";
-	char buffer_2[] = "no,no,TOV Koputa,30,25,1900,Pear,E27";
-	char buffer_3[] = "yes,yes,TOV Romashka,25,150,2500,Candle,E50";
-	write_to_struct(buffer_1, ",", &container->bulbs[0]);
-	write_to_struct(buffer_2, ",", &container->bulbs[1]);
-	write_to_struct(buffer_3, ",", &container->bulbs[2]);
+	struct Bulb bulbs_array[3] = { { "yes", "yes", "TOV Roga ta koputa", 20, 15, 1800, "Globe", "E40" },
+				       { "no", "no", "TOV Koputa", 30, 25, 1900, "Pear", "E27" },
+				       { "yes", "yes", "TOV Romashka", 25, 150, 2500, "Candle", "E50" } };
+	memcpy(container->bulbs, bulbs_array, 3 * sizeof(struct Bulb));
 	int actual_value = is_burned_bulb(container);
 	int expected_value = 1;
 	ck_assert_int_eq(expected_value, actual_value);

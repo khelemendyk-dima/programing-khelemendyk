@@ -135,25 +135,3 @@ void print_bulbs(struct Container *cont)
 		}
 	}
 }
-int write_to_struct(char *string, const char *delim, struct Bulb *bulbs)
-{
-	char *p = strtok(string, delim);
-	if (!p || !strncpy(bulbs->is_on, p, sizeof(bulbs->is_on) - 1))
-		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->is_burned, p, sizeof(bulbs->is_burned) - 1))
-		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->factory, p, sizeof(bulbs->factory) - 1))
-		return 1;
-	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(bulbs->reverse_counter)) != 1)
-		return 1;
-	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(bulbs->vatt)) != 1)
-		return 1;
-	if (!(p = strtok(NULL, delim)) || sscanf(p, "%d", &(bulbs->color_temp)) != 1)
-		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->shape, p, sizeof(bulbs->shape) - 1))
-		return 1;
-	if (!(p = strtok(NULL, delim)) || !strncpy(bulbs->base_type, p, sizeof(bulbs->base_type) - 1))
-		return 1;
-
-	return 0;
-}
