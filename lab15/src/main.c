@@ -24,7 +24,7 @@
  * @version 0.1
  */
 
-#include "entity.h"
+#include "list.h"
 
 /**
  * Головна функція.
