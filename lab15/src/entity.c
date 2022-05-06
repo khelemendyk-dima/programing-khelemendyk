@@ -34,7 +34,7 @@ void get_bulb(struct Bulb *e)
 int get_answer()
 {
 	int ans;
-	printf("\nWhat you want to do?\n");
+	printf("\nWhat do you want to do?\n");
 	printf("0 - exit;\n");
 	printf("1 - add bulb;\n");
 	printf("2 - remove bulb;\n");
