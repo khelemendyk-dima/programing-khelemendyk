@@ -1,6 +1,0 @@
-Виробник лампочки
-yes, no, TOV Roga ta koputa, 20, 15, 1800, Globe, E40
-no, yes, TOV Roga ta oleni, 40, 30, 3600, Circle, E20
-no, no, TOV Koputa, 30, 25, 1900, Pear, E27
-yes, yes, TOV Romashka, 25, 150, 2500, Candle, E50
-yes, yes, TOV Kapysta, 19, 10, 1400, Ogive, E30
